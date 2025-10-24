@@ -1,0 +1,16 @@
+# 相机内参矩阵（路径基于容器，见说明确定挂载关系）
+cam_k_path: /app/example/cam_K.txt
+# 位姿估计质量参数
+candidate_quality: l                  # 候选位姿数（显著影响精度与推理速度）
+refine_iteration: 3                   # 候选位姿迭代次数（影响精度与推理速度）
+post_track: 5                         # 检测位姿迭代次数（对推理速度影响较小）
+# 模型配置字典，模型名 : 模型路径（路径基于容器，见说明确定挂载关系）
+mesh_cnf_dict: 
+  blue_big: /app/example/blue_big/blue_big.PLY
+  green_small: /app/example/green_small/green_small.PLY
+  yellow_middle: /app/example/yellow_middle/yellow_middle.PLY
+# 是否使用 bbox 中心作为模型坐标系原点（默认为模型坐标系）
+is_bbox_pose: False
+# 深度调整参数（默认为米，确保传入模型的深度图像素单位为米）
+z_far: 1.50
+z_near: 0.10
