@@ -183,10 +183,10 @@ class MeshInfo:
     def draw_mesh_axis_bbox(
             self, img: np.ndarray, K: np.ndarray, bbox_pose: np.ndarray, label: str, 
             line_color: tuple = (0, 255, 0), line_sacle: float = 0.02, 
-            font_color: tuple = (255, 0, 255), font_size: int = 3, is_input_rgb = False
+            font_color: tuple = (255, 0, 255), font_size: int = 3, is_input_rgb = True
                             ):
         '''
-        * `img` BGR 格式图片
+        * `img` RGB 格式图片
         '''
         vis = draw_posed_3d_box(K, img=img, ob_in_cam=bbox_pose, bbox=self.bbox, line_color = line_color)
         vis = draw_xyz_axis(img, ob_in_cam=bbox_pose, scale=line_sacle, K=K, thickness=3, transparency=0, is_input_rgb = is_input_rgb)
@@ -385,6 +385,9 @@ class FPMultiTask:
         '''
         获取基于模型包容盒坐标系的上一次预测结果
         '''
+        if not isinstance(self.target_dict[target_name].pose_last, torch.Tensor):
+            raise RuntimeError("Mesh has not register")
+
         return np.asarray(self.get_target_raw_pose(target_name) @ self.target_dict[target_name].mesh_info.origin_to_bbox, dtype = np.float64)
 
     def draw_last_pose(

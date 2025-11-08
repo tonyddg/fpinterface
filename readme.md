@@ -69,8 +69,8 @@ docker start  fpinterface && docker exec -it fpinterface bash -c "cd /app/app &&
 模型推理控制参数位于 `/app/app/server_config.yaml`，需要 `Ctrl + C` 关闭服务器再重启设置才能生效，配置示例如下
 
 ```yaml
-# 相机内参矩阵（路径基于容器，见说明确定挂载关系）
-cam_k_path: /example/mine/cam_K.txt
+# 相机内参矩阵
+cam_k: [604.82214, 0.0, 319.2875, 0.0, 604.3031, 234.96078, 0.0, 0.0, 1.0]
 # 位姿估计质量参数
 candidate_quality: l                  # 候选位姿数（显著影响精度与推理速度）
 refine_iteration: 3                   # 候选位姿迭代次数（影响精度与推理速度）
@@ -80,8 +80,6 @@ mesh_cnf_dict:
   blue_big: /example/mine/blue_big/blue_big.PLY
   green_small: /example/mine/green_small/green_small.PLY
   yellow_middle: /example/mine/yellow_middle/yellow_middle.PLY
-# 是否使用 bbox 中心作为模型坐标系原点（默认为模型坐标系）
-is_bbox_pose: False
 # 深度调整参数（默认为米，确保传入模型的深度图像素单位为米）
 z_far: 1.50
 z_near: 0.10
@@ -96,11 +94,11 @@ z_near: 0.10
 以下实用测试脚本需要在容器中运行，命令行参数通过 `-h` 查询
 - `/app/app/model_render.py` 渲染给定的模型
 - `/app/app/single_shot.py` 根据给定的 rbg，深度，掩膜图进行推理
-- `/app/client/client.py` 客户端测试，运行时需要保证服务启动
 
 ## 客户端使用
 
-客户端类的实现位于模块 `app/client.py`，通过类 `FoundationPoseClient` 向服务端发送请求
-- 客户端类的使用方式可参见模块中的示例
+客户端模块为 `fpinterface-client`
+- 通过 `pip install "git+https://github.com/tonyddg/fpinterface.git@main#subdirectory=fpinterface-client"` 安装到环境中
+- 使用示例可查看 `fpinterface-client/src/fpinterface_client/__main__.py`, 在安装客户端后使用 `python -m fpinterface_client` 运行示例及可视化方法
+- 通过 `from fpinterface_client import FoundationPoseClient` 引入客户端类
 - 客户端类通过方法 `infer` 发起推理请求获取结果，对于图像格式说明见函数注释
-- 模块 `app/client.py` 不依赖其他模块，复制到外部依然可以使用（可视化结果需要在容器中）

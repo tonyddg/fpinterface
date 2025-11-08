@@ -80,15 +80,15 @@ def unpack_numpy(
 @dataclass
 class FPServerCfg:
     # 相机内参矩阵
-    cam_k_path: str = "/dataset/mine/cam_K.txt"
+    cam_k: List[float] = field(default_factory = lambda: [])
     # 位姿估计质量参数
     candidate_quality: str = 'l'                # 候选位姿数
     refine_iteration: int = 3                   # 候选位姿迭代次数
     post_track: int = 5                         # 检测位姿迭代次数
     # 模型配置字典，模型名 : 模型路径
     mesh_cnf_dict: Dict[str, str] = field(default_factory = lambda : {})
-    # 是否使用 bbox 中心作为模型坐标系原点（默认为模型坐标系）
-    is_bbox_pose: bool = False
+    # # 是否使用 bbox 中心作为模型坐标系原点（默认为模型坐标系）
+    # is_bbox_pose: bool = False
     # 深度调整参数
     z_far: float = 1.5
     z_near: float = 0.1
@@ -127,6 +127,10 @@ class FPRespone(BaseModel):
             position = [float(p) for p in position],
             quat = [float(q) for q in quat]
         )
+    
+class BboxModel(BaseModel):
+    max_xyz: List[float] = Field(min_length = 3, max_length = 3)
+    min_xyz: List[float] = Field(min_length = 3, max_length = 3)
 
 class FPServer:
     def __init__(
@@ -139,7 +143,7 @@ class FPServer:
         
         self.cfg = cfg
         self.est = FPMultiTask()
-        self.K = np.loadtxt(self.cfg.cam_k_path).reshape(3,3)
+        self.K = np.array(self.cfg.cam_k).reshape((3, 3))
 
         for mesh_name, mesh_path in cfg.mesh_cnf_dict.items():
             self.est.add_target(
@@ -151,9 +155,17 @@ class FPServer:
                 )
             )
 
+    def set_k(
+        self,
+        cam_k: List[float]
+    ):
+        self.cfg.cam_k = cam_k
+        self.K = np.array(self.cfg.cam_k).reshape((3, 3))
+
     def infer(
         self,
         target_name: str,
+        is_bbox_pose: bool,
         pack_arr: np.ndarray
     ):
         (rgb, depth, mask) = unpack_numpy(
@@ -166,9 +178,21 @@ class FPServer:
         if self.cfg.post_track > 0:
             self.est.track_one(target_name, rgb, depth, self.K, self.cfg.post_track)
 
-        if self.cfg.is_bbox_pose:
+        if is_bbox_pose:
             pose_mat = self.est.get_target_bbox_pose(target_name)
         else:
             pose_mat = self.est.get_target_origin_pose(target_name)
 
         return FPRespone.T2Respone(pose_mat)
+
+    def get_mesh_bbox(self, target: str):
+
+        target_mesh_info = self.est.target_dict.get(target, None)
+        if target_mesh_info is None:
+            raise RuntimeError("Invalid Target")
+        
+        bbox = target_mesh_info.mesh_info.bbox
+        min_xyz = np.asarray(bbox.min(axis=0))
+        max_xyz = np.asarray(bbox.max(axis=0))
+
+        return BboxModel(min_xyz = min_xyz.tolist(), max_xyz = max_xyz.tolist())
