@@ -35,7 +35,10 @@ def draw_xyz_axis(
         K: np.ndarray = np.eye(3), 
         thickness: int = 3, 
         transparency: float = 0,
-        is_input_rgb: bool = False
+        is_input_rgb: bool = False,
+
+        is_draw_axis_label: bool = True,
+        label_size: int = 2,
     ):
     '''
     来自 FoundationPose, 绘制物体坐标系, 红色为 x 轴, 绿色为 y 轴, 蓝色为 z 轴
@@ -59,16 +62,25 @@ def draw_xyz_axis(
     tmp = color.copy()
     tmp1 = tmp.copy()
     tmp1 = cv2.arrowedLine(tmp1, origin, xx, color=(0,0,255), thickness=thickness,line_type=line_type, tipLength=arrow_len)
+    if is_draw_axis_label:
+        tmp1 = cv2.putText(tmp1, "x", xx, cv2.FONT_HERSHEY_PLAIN, label_size, (0,0,255), 2, cv2.LINE_AA)
     mask = np.linalg.norm(tmp1-tmp, axis=-1)>0
     tmp[mask] = tmp[mask]*transparency + tmp1[mask]*(1-transparency)
+
     tmp1 = tmp.copy()
     tmp1 = cv2.arrowedLine(tmp1, origin, yy, color=(0,255,0), thickness=thickness,line_type=line_type, tipLength=arrow_len)
+    if is_draw_axis_label:
+        tmp1 = cv2.putText(tmp1, "y", yy, cv2.FONT_HERSHEY_PLAIN, label_size, (0,255,0), 2, cv2.LINE_AA)
     mask = np.linalg.norm(tmp1-tmp, axis=-1)>0
     tmp[mask] = tmp[mask]*transparency + tmp1[mask]*(1-transparency)
+
     tmp1 = tmp.copy()
     tmp1 = cv2.arrowedLine(tmp1, origin, zz, color=(255,0,0), thickness=thickness,line_type=line_type, tipLength=arrow_len)
+    if is_draw_axis_label:
+        tmp1 = cv2.putText(tmp1, "z", zz, cv2.FONT_HERSHEY_PLAIN, label_size, (255,0,0), 2, cv2.LINE_AA)
     mask = np.linalg.norm(tmp1-tmp, axis=-1)>0
     tmp[mask] = tmp[mask]*transparency + tmp1[mask]*(1-transparency)
+
     tmp = tmp.astype(np.uint8)
     if is_input_rgb:
         tmp = cv2.cvtColor(tmp,cv2.COLOR_BGR2RGB)
@@ -148,7 +160,7 @@ def draw_mesh_axis_bbox(
 
     vis = draw_xyz_axis(img, ob_in_cam=use_pose, scale=line_sacle, K=K, thickness=3, transparency=0, is_input_rgb = is_input_rgb)
     
-    center = project_3d_to_2d(np.array([0,0,0,1]), K, use_pose) + np.array([10, -10])
-    vis = cv2.putText(vis, label, center, cv2.FONT_HERSHEY_PLAIN, font_size, font_color, 2, cv2.LINE_AA)
+    center = project_3d_to_2d(np.array([0,0,0,1]), K, use_pose) + np.array([20, -20])
+    vis = cv2.putText(vis, label, tuple(center), cv2.FONT_HERSHEY_PLAIN, font_size, font_color, 2, cv2.LINE_AA)
 
     return vis
