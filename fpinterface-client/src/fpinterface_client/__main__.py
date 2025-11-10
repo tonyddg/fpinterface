@@ -13,19 +13,15 @@ if __name__ == "__main__":
     except:
         raise RuntimeError("运行示例前请先安装 tyro 与 matplotlib")
     
-    app_dir = Path(__file__).parent.joinpath("../../../")
+    app_dir = Path(__file__).parent.joinpath("../../")
     @dataclass
     class CliArgs:
         # RGB 文件路径
-        COLOR_IMG: str = app_dir.joinpath("example/example/color.png").as_posix()
+        COLOR_IMG: str = app_dir.joinpath("example/color.png").as_posix()
         # 掩膜图片路径
-        MASK_IMG: str = app_dir.joinpath("example/example/workspace_mask.png").as_posix()
+        MASK_IMG: str = app_dir.joinpath("example/workspace_mask.png").as_posix()
         # 深度图片路径
-        DEPTH_IMG: str = app_dir.joinpath("example/example/depth.png").as_posix()
-        # 相机内参矩阵文件
-        K_PATH: str = app_dir.joinpath("example/cam_K.txt").as_posix()
-        # 模型文件路径
-        MESH_FILE_ORIGIN: str = app_dir.joinpath("example/blue_big/blue_big.PLY").as_posix()
+        DEPTH_IMG: str = app_dir.joinpath("example/depth.png").as_posix()
         # 是否绘制原始坐标系
         IS_DRAW_ORIN_POSE: bool = False
         # 绘制目标
