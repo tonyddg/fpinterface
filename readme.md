@@ -10,7 +10,8 @@
 
 ```shell
 git clone https://github.com/tonyddg/fpinterface.git
-git submodule update --init --recursive
+cd fpinterface
+git clone https://github.com/NVlabs/FoundationPose.git
 ```
 
 拉取 FoundationPose 镜像
