@@ -13,7 +13,7 @@ import tyro
 @dataclass
 class CliArgs:
     # 展示模型
-    model_path: str = "/app/example/blue_big/blue_big.PLY"
+    model_path: str = "/app/example/yellow_middle/yellow_middle.PLY"
     # 相机内参矩阵文件
     cam_k_path: str = "/app/example/cam_K.txt"
     # 模型坐标
