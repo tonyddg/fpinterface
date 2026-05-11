@@ -26,11 +26,11 @@ class CliArgs:
     # 模型文件路径
     MESH_FILE_ORIGIN: str = "/app/example/blue_big/blue_big.PLY"
     # RGB 文件路径
-    COLOR_IMG: str = "/app/example/example/color.png"
+    COLOR_IMG: str = "/app/fpinterface-client/example/color.png"
     # 掩膜图片路径
-    MASK_IMG: str = "/app/example/example/workspace_mask.png"
+    MASK_IMG: str = "/app/fpinterface-client/example/workspace_mask.png"
     # 深度图片路径
-    DEPTH_IMG: str = "/app/example/example/depth.png"
+    DEPTH_IMG: str = "/app/fpinterface-client/example/depth.png"
     # 相机内参矩阵文件
     K_PATH: str = "/app/example/cam_K.txt"
 
