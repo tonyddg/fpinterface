@@ -8,12 +8,10 @@ authors = [
 ]
 requires-python = ">=3.8"
 dependencies = [
-    "matplotlib",
     "numpy>=1.24.4",
     "opencv-python>=4.11.0.86",
     "requests>=2.32.4",
     "scipy>=1.10.1",
-    "tyro>=0.9.35",
 ]
 
 [project.scripts]
@@ -23,8 +21,8 @@ fpinterface-client = "fpinterface_client:main"
 requires = ["uv_build"]
 build-backend = "uv_build"
 
-[dependency-groups]
-dev = [
+[project.optional-dependencies]
+cli = [
     "matplotlib>=3.7.5",
     "tyro>=0.9.35",
 ]
