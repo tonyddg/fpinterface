@@ -8,13 +8,20 @@ if __name__ == "__main__":
 
     from pathlib import Path
     from dataclasses import dataclass
-    from importlib.resources import files, as_file
+
+    try:
+        # Python >= 3.9
+        from importlib.resources import files, as_file
+    except ImportError:
+        # Python 3.8
+        from importlib_resources import files, as_file
+        raise RuntimeError("运行示例前请通过 pip install 'fpinterface-client[cli] @ ...' 或 uv sync --all-extras 安装开发依赖 importlib_resources")
 
     try:
         from matplotlib import pyplot as plt
         import tyro
     except:
-        raise RuntimeError("运行示例前请通过 pip install ...[cli] 或 uv sync --all-extras 安装开发依赖 tyro 与 matplotlib")
+        raise RuntimeError("运行示例前请通过 pip install 'fpinterface-client[cli] @ ...' 或 uv sync --all-extras 安装开发依赖 tyro 与 matplotlib")
 
     @dataclass
     class CliArgs:
