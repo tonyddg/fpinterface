@@ -99,9 +99,9 @@ z_near: 0.10
 ## 客户端使用
 
 客户端模块为 `fpinterface-client`
-- 通过 `pip install "git+https://github.com/tonyddg/fpinterface.git@main#subdirectory=fpinterface-client"` 安装到环境中
+- 通过 `pip install "fpinterface-client @ git+https://github.com/tonyddg/fpinterface.git@main#subdirectory=fpinterface-client"` 安装到环境中
 - 通过 `python -m fpinterface_client` 可以命令行方式调用 fpinterface
-  - 使用命令行方式时, 还需要通过 `pip install "git+https://...[cli]"` 安装额外依赖
+  - 使用命令行方式时, 还需要通过 `pip install "fpinterface-client[cli] @ git+https://..."` 安装额外依赖
   - 通过 `python -m fpinterface_client src:None -h` 基于示例图片调用 fpinterface
   - 通过 `python -m fpinterface_client src:img-path -h` 查看如何使用自定义图片调用 fpinterface
 - 通过 `from fpinterface_client import FoundationPoseClient` 引入客户端类
