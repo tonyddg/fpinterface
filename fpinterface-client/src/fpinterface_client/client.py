@@ -3,8 +3,7 @@ import numpy as np
 import requests
 import io
 
-from scipy.spatial.transform import Rotation as R
-from .utility import pack_numpy, depth_filter
+from .utility import pack_numpy, quat_to_rotmat
 
 import logging
 logger = logging.getLogger(__name__)
@@ -97,7 +96,7 @@ class FoundationPoseClient:
         # 将推理结果转换为位姿矩阵（默认为四元数）
         position = np.asarray(respond["position"], dtype = np.float64)
         quat = np.asarray(respond["quat"], dtype = np.float64)
-        rot = R.from_quat(quat).as_matrix()
+        rot = quat_to_rotmat(quat)
 
         pose_mat = np.identity(4)
         pose_mat[:3, :3] = rot

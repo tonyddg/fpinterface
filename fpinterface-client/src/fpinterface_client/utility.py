@@ -40,3 +40,30 @@ def depth_filter(
     '''
     depth[(depth < 0.001) | (depth >= z_far)] = 0
     return depth
+
+def quat_to_rotmat(q):
+    """
+    将 w 位于最后的四元数转为 3x3 旋转矩阵。
+
+    参数:
+        q: numpy array, shape (4,)
+           四元数格式为 [x, y, z, w]
+
+    返回:
+        R: numpy array, shape (3, 3)
+           旋转矩阵
+    """
+    q = np.asarray(q, dtype = np.float64)
+
+    # 归一化，避免数值误差
+    q = q / np.linalg.norm(q)
+
+    x, y, z, w = q
+
+    R = np.array([
+        [1 - 2 * (y*y + z*z),     2 * (x*y - z*w),     2 * (x*z + y*w)],
+        [    2 * (x*y + z*w), 1 - 2 * (x*x + z*z),     2 * (y*z - x*w)],
+        [    2 * (x*z - y*w),     2 * (y*z + x*w), 1 - 2 * (x*x + y*y)]
+    ], dtype = np.float64)
+
+    return R
