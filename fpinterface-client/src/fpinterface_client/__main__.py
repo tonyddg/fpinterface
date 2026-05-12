@@ -42,6 +42,10 @@ if __name__ == "__main__":
         is_draw_orin_pose: bool = False
         # 绘制目标
         target_label: str = "blue_big"
+        # 服务端地址
+        host: str = "http://127.0.0.1"
+        # 服务端端口
+        port: int = 8000
     config = tyro.cli(CliArgs)
 
     import cv2
@@ -71,7 +75,10 @@ if __name__ == "__main__":
 
     depth = depth_filter(depth)
 
-    fpc = FoundationPoseClient()
+    fpc = FoundationPoseClient(
+        host = config.host,
+        port = config.port
+    )
 
     start_time = time.perf_counter()
     bbox_pose = fpc.infer(
